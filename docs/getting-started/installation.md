@@ -130,6 +130,9 @@ Open Notebook uses environment variables for configuration. Create a `.env` file
 # Security (Optional - for public deployments)
 OPEN_NOTEBOOK_PASSWORD=your_secure_password_here
 
+# HTTP client timeout in seconds
+OPEN_NOTEBOOK_API_CLIENT_TIMEOUT=how manyz seconds you can haz
+
 # Database Configuration
 SURREAL_URL="ws://localhost:8000/rpc"
 SURREAL_USER="root"

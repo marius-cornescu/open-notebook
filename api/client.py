@@ -15,7 +15,15 @@ class APIClient:
 
     def __init__(self, base_url: Optional[str] = None):
         self.base_url = base_url or os.getenv("API_BASE_URL", "http://127.0.0.1:5055")
-        self.timeout = 30.0
+
+        try:
+            default_timeout = float(os.environ.get("OPEN_NOTEBOOK_API_CLIENT_TIMEOUT"))
+            logger.info(f"APIClient default_timeout [{default_timeout}]")
+        except ValueError as e:
+            logger.error(f"Failed to process the APIClient default_timeout: [{e}]", e)
+            default_timeout = 30.0
+
+        self.timeout = default_timeout
         # Add authentication header if password is set
         self.headers = {}
         password = os.getenv("OPEN_NOTEBOOK_PASSWORD")
@@ -44,7 +52,7 @@ class APIClient:
             raise ConnectionError(f"Failed to connect to API: {str(e)}")
         except httpx.HTTPStatusError as e:
             logger.error(
-                f"HTTP error {e.response.status_code} for {method} {url}: {e.response.text}"
+                f"HTTP error {e.response.status_code} for {method} {url} with timeout {request_timeout}: {e.response.text}"
             )
             raise RuntimeError(
                 f"API request failed: {e.response.status_code} - {e.response.text}"
